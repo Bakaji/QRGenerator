@@ -1,0 +1,118 @@
+﻿<Window x:Class="QRGenerate.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:QRGenerate"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Title="MainWindow" Height="600" Width="800" MinWidth="800" MinHeight="600">
+    <Window.InputBindings>
+        <KeyBinding Gesture="Control+S"  Command="{Binding MyConverter}" />
+    </Window.InputBindings>
+    <Window.Resources>
+        <SolidColorBrush x:Key="MainColor" Color="#002060"></SolidColorBrush>
+        <SolidColorBrush x:Key="SelectionColor" Color="#55002060"></SolidColorBrush>
+        <SolidColorBrush x:Key="SecoColor" Color="White"></SolidColorBrush>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="300" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="70" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border Grid.ColumnSpan="2" BorderBrush="{StaticResource MainColor}" BorderThickness="0 0 0 1"  MouseMove="MoveWindow">
+            <Grid Background="{StaticResource MainColor}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Text to QR Generator" Foreground="{StaticResource SecoColor}" FontSize="18" Margin="15 0 0 0"></Label>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Label Cursor="Hand" MouseLeftButtonUp="Minimise" VerticalContentAlignment="Center" Padding="0" Margin="0 0 15 0">
+                        <md:PackIcon Kind="Minus" Height="25" Width="25" Foreground="{StaticResource SecoColor}" />
+                    </Label>
+                    <Label  Cursor="Hand" MouseLeftButtonUp="Close"  VerticalContentAlignment="Center" Padding="0" Margin="0 0 5 0">
+                        <md:PackIcon Kind="WindowClose" Height="25" Width="25" Foreground="{StaticResource SecoColor}" />
+                    </Label>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <TextBox md:HintAssist.Hint="Type or paste clipboard here" Grid.Row="1" VerticalContentAlignment="Center" VerticalAlignment="Center" Height="40" FontSize="18" Foreground="{StaticResource MainColor}" Text="{Binding ToCode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="15 0 0 0">
+            <TextBox.InputBindings>
+                <KeyBinding Gesture="Control+S"  Command="{Binding MyConverter}" />
+            </TextBox.InputBindings>
+        </TextBox>
+        <Button  Grid.Row="1" Name="cls" Background="{StaticResource MainColor}" Click="SubmitTrigger" Grid.Column="1"  Width="170" Margin="10" Content="Generate"></Button>
+        <Grid  Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel>
+                <Label Margin="15 0 0 0" Content="QR Code" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{StaticResource MainColor}" FontSize="18" BorderThickness="0 0 0 2" BorderBrush="{StaticResource MainColor}" />
+            </StackPanel>
+
+            <Image Grid.Row="1" Name="view" Height="400" Width="400" ></Image>
+        </Grid>
+        <Grid Grid.Column="2" Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Content="Clips list" HorizontalAlignment="Left" Margin="15 0 0 0" VerticalAlignment="Center" Foreground="{StaticResource MainColor}" FontSize="18" BorderThickness="0 0 0 2" BorderBrush="{StaticResource MainColor}"></Label>
+            <ListBox Name="lb" SelectionChanged="SelectionChangedHandler" Style="{StaticResource ListSSSS}" Grid.Row="1">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MaterialDesignListBoxItem}">
+                        <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+
+                        <Setter Property="md:RippleAssist.IsDisabled" Value="True" />
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{StaticResource SelectionColor}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Height="40">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="20" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="{Binding}" VerticalAlignment="Center" Foreground="{StaticResource MainColor}">
+                                <Label.Style>
+                                    <Style TargetType="ContentControl">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                <Setter Property="Foreground" Value="Green"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                            <md:PackIcon Grid.Column="1" Cursor="Hand" VerticalAlignment="Center" ToolTip="Edit in text field" Kind="Pencil" Height="15" Width="15" Foreground="{StaticResource MainColor}" MouseLeftButtonUp="EditInTextBox" />
+                            <md:PackIcon Grid.Column="2" VerticalAlignment="Center" ToolTip=" Edit in text field Generate" Kind="SubdirectoryArrowRight" Height="15" Width="15" Foreground="{StaticResource MainColor}" MouseLeftButtonUp="EditAndGenerate" Cursor="Hand" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Grid>
+</Window>
